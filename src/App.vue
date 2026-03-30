@@ -367,7 +367,7 @@ function formatModifier(mod) {
 <template>
   <main>
     <section>
-      <h1>D&D 5e Character Builder</h1>
+      <h1>D&D Character Builder</h1>
       <p>Створіть болванку персонажа для настільної рольової гри</p>
     </section>
 

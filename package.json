@@ -1,7 +1,7 @@
 {
   "name": "dnd-builder",
   "version": "1.0.0",
-  "description": "D&D 5e Character Builder",
+  "description": "D&D Character Builder",
   "type": "module",
   "scripts": {
     "dev": "vite",
