@@ -15,37 +15,52 @@ const CLASSES = [
   { 
     name: 'Воїн', 
     hitDice: 10, 
+    hitDiceCount: 1,
     primary: 'str', 
     secondary: 'con', 
-    saves: ['str', 'con'] 
+    saves: ['str', 'con'],
+    skills: ['Athletics'],
+    proficiencyBonus: 2
   },
   { 
     name: 'Маг', 
-    hitDice: 6, 
+    hitDice: 6,
+    hitDiceCount: 1,
     primary: 'int', 
     secondary: 'dex', 
-    saves: ['int', 'wis'] 
+    saves: ['int', 'wis'],
+    skills: ['Arcana', 'History'],
+    proficiencyBonus: 2
   },
   { 
     name: 'Слідопит', 
-    hitDice: 10, 
+    hitDice: 10,
+    hitDiceCount: 1,
     primary: 'dex', 
     secondary: 'wis', 
-    saves: ['dex', 'wis'] 
+    saves: ['dex', 'wis'],
+    skills: ['Stealth', 'Survival'],
+    proficiencyBonus: 2
   },
   { 
     name: 'Жрець', 
-    hitDice: 8, 
+    hitDice: 8,
+    hitDiceCount: 1,
     primary: 'wis', 
     secondary: 'str', 
-    saves: ['wis', 'cha'] 
+    saves: ['wis', 'cha'],
+    skills: ['Medicine', 'Persuasion'],
+    proficiencyBonus: 2
   },
   { 
     name: 'Злодій', 
-    hitDice: 8, 
+    hitDice: 8,
+    hitDiceCount: 1,
     primary: 'dex', 
     secondary: 'int', 
-    saves: ['dex', 'int'] 
+    saves: ['dex', 'int'],
+    skills: ['Acrobatics', 'Stealth'],
+    proficiencyBonus: 2
   }
 ]
 
@@ -75,6 +90,105 @@ const selectedRaceData = computed(() => {
 
 const selectedClassData = computed(() => {
   return CLASSES.find(c => c.name === selectedClass.value)
+})
+
+// Спасброски - все 6 характеристик
+const savingThrows = computed(() => {
+  if (!generatedStats.value || !selectedClassData.value) return []
+  const classData = selectedClassData.value
+  const proficiencyBonus = classData.proficiencyBonus || 2
+  const classSaveProficiencies = classData.saves || []
+  
+  return ABILITY_KEYS.map(key => {
+    const isProficient = classSaveProficiencies.includes(key)
+    const abilityMod = getModifier(generatedStats.value[key])
+    const totalMod = isProficient ? abilityMod + proficiencyBonus : abilityMod
+    return {
+      ability: ABILITY_NAMES_UA[key],
+      value: totalMod,
+      formatted: formatModifier(totalMod),
+      proficient: isProficient
+    }
+  })
+})
+
+// Все навыки
+const characterSkills = computed(() => {
+  if (!generatedStats.value || !selectedClassData.value) return []
+  const classData = selectedClassData.value
+  const proficiencyBonus = classData.proficiencyBonus || 2
+  const classProficientSkills = CLASS_SKILLS[classData.name] || []
+  
+  return SKILLS.map(skill => {
+    const isProficient = classProficientSkills.includes(skill.name)
+    const abilityMod = getModifier(generatedStats.value[skill.ability])
+    const totalMod = isProficient ? abilityMod + proficiencyBonus : abilityMod
+    return {
+      name: skill.name,
+      ability: ABILITY_NAMES_UA[skill.ability],
+      value: totalMod,
+      formatted: formatModifier(totalMod),
+      proficient: isProficient
+    }
+  })
+})
+
+// Класс брони
+const armorClass = computed(() => {
+  if (!generatedStats.value) return null
+  const dexMod = getModifier(generatedStats.value.dex)
+  return 10 + dexMod
+})
+
+// Ініціатива
+const initiative = computed(() => {
+  if (!generatedStats.value) return null
+  return getModifier(generatedStats.value.dex)
+})
+
+// Полный список навыков D&D 5e
+const SKILLS = [
+  { name: 'Акробатика', ability: 'dex' },
+  { name: 'Атлетика', ability: 'str' },
+  { name: 'Аналіз', ability: 'int' },
+  { name: 'Уважність', ability: 'wis' },
+  { name: 'Виживання', ability: 'wis' },
+  { name: 'Виступ', ability: 'cha' },
+  { name: 'Залякування', ability: 'cha' },
+  { name: 'Історія', ability: 'int' },
+  { name: 'Спритність рук', ability: 'dex' },
+  { name: 'Магія', ability: 'int' },
+  { name: 'Медицина', ability: 'wis' },
+  { name: 'Обман', ability: 'cha' },
+  { name: 'Природа', ability: 'int' },
+  { name: 'Проникливість', ability: 'wis' },
+  { name: 'Релігія', ability: 'int' },
+  { name: 'Потайність', ability: 'dex' },
+  { name: 'Переконання', ability: 'cha' },
+  { name: 'Догляд за тваринами', ability: 'wis' }
+]
+
+// Навычки класса
+const CLASS_SKILLS = {
+  'Воїн': ['Атлетика', 'Уважність', 'Виживання', 'Залякування', 'Історія', 'Проникливість'],
+  'Маг': ['Аналіз', 'Магія', 'Історія', 'Релігія'],
+  'Слідопит': ['Уважність', 'Виживання', 'Потайність', 'Спритність рук', 'Проникливіст'],
+  'Жрець': ['Медицина', 'Переконання', 'Релігія', 'Проникливість', 'Історія'],
+  'Злодій': ['Акробатика', 'Аналіз', 'Обман', 'Потайність', 'Переконання', 'Спритність рук']
+}
+
+// Кость хитов
+const hitDiceInfo = computed(() => {
+  if (!selectedClassData.value || !generatedStats.value) return null
+  const classData = selectedClassData.value
+  const conMod = getModifier(generatedStats.value.con)
+  const hitDice = classData.hitDice
+  const hitDiceCount = classData.hitDiceCount || 1
+  return {
+    dice: `d${hitDice}`,
+    count: hitDiceCount,
+    total: hitDiceCount * hitDice + conMod
+  }
 })
 
 // === ЛОГІКА ГЕНЕРАЦІЇ ===
@@ -221,10 +335,66 @@ function formatModifier(mod) {
       </article>
     </section>
 
-    <section v-if="baseHp !== null">
+    <section v-if="generatedStats">
       <h2>Бойові параметри</h2>
       <article>
+        <p><strong>Клас обладунку:</strong> {{ armorClass }}</p>
+        <p><strong>Ініціатива:</strong> {{ formatModifier(initiative) }}</p>
+        <p><strong>Швидкість:</strong> 30 футів</p>
+      </article>
+    </section>
+
+    <section v-if="baseHp !== null">
+      <h2>Хіти</h2>
+      <article>
         <p><strong>HP (1-й рівень):</strong> {{ baseHp }}</p>
+        <p><strong>Кістка хітів:</strong> {{ hitDiceInfo.count }}{{ hitDiceInfo.dice }}</p>
+      </article>
+    </section>
+
+    <section v-if="savingThrows.length > 0">
+      <h2>Рятувальні кидки</h2>
+      <article>
+        <table>
+          <thead>
+            <tr>
+              <th>Характеристика</th>
+              <th>Модифікатор</th>
+              <th>Перевага</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="save in savingThrows" :key="save.ability">
+              <td>{{ save.ability }}</td>
+              <td>{{ save.formatted }}</td>
+              <td>{{ save.proficient ? '✓' : '—' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </article>
+    </section>
+
+    <section v-if="characterSkills.length > 0">
+      <h2>Навички</h2>
+      <article>
+        <table>
+          <thead>
+            <tr>
+              <th>Навичка</th>
+              <th>Характеристика</th>
+              <th>Модифікатор</th>
+              <th>Перевага</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="skill in characterSkills" :key="skill.name">
+              <td>{{ skill.name }}</td>
+              <td>{{ skill.ability }}</td>
+              <td>{{ skill.formatted }}</td>
+              <td>{{ skill.proficient ? '✓' : '—' }}</td>
+            </tr>
+          </tbody>
+        </table>
       </article>
     </section>
 
