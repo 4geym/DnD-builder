@@ -4,15 +4,15 @@ import { ref, computed } from 'vue'
 // === КОНСТАНТИ ТА ДАНІ ===
 
 const RACES = [
-  { name: 'Дворф', bonuses: { str: 2, dex: 0, con: 2, int: 0, wis: 0, cha: 0 } },
-  { name: 'Ельф', bonuses: { str: 0, dex: 2, con: 0, int: 0, wis: 1, cha: 0 } },
-  { name: 'Галфлінґ', bonuses: { str: 0, dex: 2, con: 1, int: 0, wis: 0, cha: 0 } },
-  { name: 'Людина', bonuses: { str: 1, dex: 1, con: 1, int: 1, wis: 1, cha: 1 } },
-  { name: 'Дракононароджений', bonuses: { str: 2, dex: 0, con: 0, int: 0, wis: 0, cha: 1 } },
-  { name: 'Гном', bonuses: { str: 0, dex: 0, con: 2, int: 2, wis: 0, cha: 0 } },
-  { name: 'Напівельф', bonuses: { str: 0, dex: 1, con: 0, int: 0, wis: 0, cha: 2 } },
-  { name: 'Напіворк', bonuses: { str: 2, dex: 0, con: 1, int: 0, wis: 0, cha: -1 } },
-  { name: 'Тіфлінґ', bonuses: { str: 0, dex: 0, con: 1, int: 1, wis: 0, cha: 2 } }
+  { name: 'Дворф', bonuses: { str: 2, dex: 0, con: 2, int: 0, wis: 0, cha: 0 }, desc: 'Працьовиті копачі та ковалі. Темний зір, стійкість до отрут, володіння молотом та киркою.' },
+  { name: 'Ельф', bonuses: { str: 0, dex: 2, con: 0, int: 0, wis: 1, cha: 0 }, desc: 'Спритні та мудрі мешканці лісів. Темний зір, імунітет до сну, володіння довгим мечем та луком.' },
+  { name: 'Галфлінґ', bonuses: { str: 0, dex: 2, con: 1, int: 0, wis: 0, cha: 0 }, desc: 'Маленькі та везучі. Природна спритність, стійкість до страху, бонус до ініціативи.' },
+  { name: 'Людина', bonuses: { str: 1, dex: 1, con: 1, int: 1, wis: 1, cha: 1 }, desc: 'Найуніверсальніші. Бонус до будь-якої характеристики, додаткова навичка, володіння однією мовою.' },
+  { name: 'Дракононароджений', bonuses: { str: 2, dex: 0, con: 0, int: 0, wis: 0, cha: 1 }, desc: 'Нащадки драконів. Подих дракона, стійкість до ушкоджень, імунітет до зачарування.' },
+  { name: 'Гном', bonuses: { str: 0, dex: 0, con: 2, int: 2, wis: 0, cha: 0 }, desc: 'Майстри винахідників. Темний зір, гномяча хитрість, володіння інструментами.' },
+  { name: 'Напівельф', bonuses: { str: 0, dex: 1, con: 0, int: 0, wis: 0, cha: 2 }, desc: 'Поєднуючі два світи. Темний зір, додаткова навичка, мова.' },
+  { name: 'Напіворк', bonuses: { str: 2, dex: 0, con: 1, int: 0, wis: 0, cha: -1 }, desc: 'Вигнанці з орків. грозове залякування, відносна живучість, володіння зброєю.' },
+  { name: 'Тіфлінґ', bonuses: { str: 0, dex: 0, con: 1, int: 1, wis: 0, cha: 2 }, desc: 'Нащадки демонів. Стійкість до вогню, містичний фокус, мова демонів.' }
 ]
 
 const CLASSES = [
@@ -24,7 +24,8 @@ const CLASSES = [
     secondary: 'con', 
     saves: ['str', 'con'],
     skills: ['Атлетика', 'Обман', 'Залякування', 'Виживання', 'Проникливість'],
-    proficiencyBonus: 2
+    proficiencyBonus: 2,
+    desc: 'Боєві воїни люті. Бонус майстерності +2, лють (d6+рівень), бонус до атак у люті.'
   },
   { 
     name: 'Бард', 
@@ -42,8 +43,10 @@ const CLASSES = [
     hitDiceCount: 1,
     primary: 'wis', 
     secondary: 'str', 
+    saves: ['wis', 'cha'],
     skills: ['Медицина', 'Переконання', 'Релігія', 'Проникливість', 'Історія'],
-    proficiencyBonus: 2
+    proficiencyBonus: 2,
+    desc: 'Служителі богів. Заклинання, Божественне благословення,/channelлення енергії.'
   },
   { 
     name: 'Друїд', 
@@ -256,6 +259,15 @@ const hitDiceInfo = computed(() => {
   }
 })
 
+// Описание расы и класса
+const characterNote = computed(() => {
+  if (!selectedRaceData.value || !selectedClassData.value) return null
+  return {
+    raceDesc: selectedRaceData.value.desc || '',
+    classDesc: selectedClassData.value.desc || ''
+  }
+})
+
 // === ЛОГІКА ГЕНЕРАЦІЇ ===
 
 // Алгоритм 4d6 drop lowest
@@ -463,6 +475,14 @@ function formatModifier(mod) {
       </article>
     </section>
 
+    <section v-if="characterNote && baseHp !== null">
+      <h2>Довідка</h2>
+      <article class="note">
+        <p><strong>Раса:</strong> {{ characterNote.raceDesc }}</p>
+        <p><strong>Клас:</strong> {{ characterNote.classDesc }}</p>
+      </article>
+    </section>
+
     </main>
 </template>
 
@@ -539,5 +559,16 @@ textarea {
   width: 100%;
   max-width: 600px;
   resize: vertical;
+}
+
+.note {
+  background-color: #f0f8ff;
+  border-left: 4px solid #4682b4;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.note p {
+  margin-bottom: 0.5rem;
 }
 </style>
