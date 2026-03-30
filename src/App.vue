@@ -4,32 +4,85 @@ import { ref, computed } from 'vue'
 // === КОНСТАНТИ ТА ДАНІ ===
 
 const RACES = [
-  { name: 'Людина', bonuses: { str: 1, dex: 1, con: 1, int: 1, wis: 1, cha: 1 } },
-  { name: 'Ельф', bonuses: { str: 0, dex: 2, con: 0, int: 0, wis: 1, cha: 0 } },
   { name: 'Дворф', bonuses: { str: 2, dex: 0, con: 2, int: 0, wis: 0, cha: 0 } },
+  { name: 'Ельф', bonuses: { str: 0, dex: 2, con: 0, int: 0, wis: 1, cha: 0 } },
+  { name: 'Галфлінґ', bonuses: { str: 0, dex: 2, con: 1, int: 0, wis: 0, cha: 0 } },
+  { name: 'Людина', bonuses: { str: 1, dex: 1, con: 1, int: 1, wis: 1, cha: 1 } },
+  { name: 'Дракононароджений', bonuses: { str: 2, dex: 0, con: 0, int: 0, wis: 0, cha: 1 } },
   { name: 'Гном', bonuses: { str: 0, dex: 0, con: 2, int: 2, wis: 0, cha: 0 } },
-  { name: 'Напів-орк', bonuses: { str: 2, dex: 0, con: 1, int: 0, wis: 0, cha: -1 } }
+  { name: 'Напівельф', bonuses: { str: 0, dex: 1, con: 0, int: 0, wis: 0, cha: 2 } },
+  { name: 'Напіворк', bonuses: { str: 2, dex: 0, con: 1, int: 0, wis: 0, cha: -1 } },
+  { name: 'Тіфлінґ', bonuses: { str: 0, dex: 0, con: 1, int: 1, wis: 0, cha: 2 } }
 ]
 
 const CLASSES = [
   { 
-    name: 'Воїн', 
-    hitDice: 10, 
+    name: 'Варвар', 
+    hitDice: 12, 
     hitDiceCount: 1,
     primary: 'str', 
     secondary: 'con', 
     saves: ['str', 'con'],
-    skills: ['Athletics'],
+    skills: ['Атлетика', 'Обман', 'Залякування', 'Виживання', 'Проникливість'],
     proficiencyBonus: 2
   },
   { 
-    name: 'Маг', 
-    hitDice: 6,
+    name: 'Бард', 
+    hitDice: 8,
     hitDiceCount: 1,
-    primary: 'int', 
+    primary: 'cha', 
     secondary: 'dex', 
+    saves: ['dex', 'cha'],
+    skills: ['Акробатика', 'Аналіз', 'Обман', 'Виступ', 'Переконання', 'Потайність', 'Спритність рук', 'Магія', 'Проникливість'],
+    proficiencyBonus: 2
+  },
+  { 
+    name: 'Жрець', 
+    hitDice: 8,
+    hitDiceCount: 1,
+    primary: 'wis', 
+    secondary: 'str', 
+    skills: ['Медицина', 'Переконання', 'Релігія', 'Проникливість', 'Історія'],
+    proficiencyBonus: 2
+  },
+  { 
+    name: 'Друїд', 
+    hitDice: 8,
+    hitDiceCount: 1,
+    primary: 'wis', 
+    secondary: 'int', 
     saves: ['int', 'wis'],
-    skills: ['Arcana', 'History'],
+    skills: ['Аналіз', 'Магія', 'Медицина', 'Природа', 'Проникливість', 'Догляд за тваринами'],
+    proficiencyBonus: 2
+  },
+  { 
+    name: 'Воїтель', 
+    hitDice: 10,
+    hitDiceCount: 1,
+    primary: 'str', 
+    secondary: 'dex', 
+    saves: ['str', 'con'],
+    skills: ['Атлетика', 'Уважність', 'Залякування', 'Історія', 'Проникливість', 'Виживання'],
+    proficiencyBonus: 2
+  },
+  { 
+    name: 'Монах', 
+    hitDice: 8,
+    hitDiceCount: 1,
+    primary: 'dex', 
+    secondary: 'wis', 
+    saves: ['str', 'dex'],
+    skills: ['Акробатика', 'Атлетика', 'Уважність', 'Історія', 'Спритність рук'],
+    proficiencyBonus: 2
+  },
+  { 
+    name: 'Паладин', 
+    hitDice: 10,
+    hitDiceCount: 1,
+    primary: 'cha', 
+    secondary: 'str', 
+    saves: ['wis', 'cha'],
+    skills: ['Атлетика', 'Уважність', 'Переконання', 'Релігія', 'Проникливість', 'Медицина'],
     proficiencyBonus: 2
   },
   { 
@@ -39,27 +92,47 @@ const CLASSES = [
     primary: 'dex', 
     secondary: 'wis', 
     saves: ['dex', 'wis'],
-    skills: ['Stealth', 'Survival'],
+    skills: ['Уважність', 'Виживання', 'Потайність', 'Спритність рук', 'Проникливість', 'Догляд за тваринами'],
     proficiencyBonus: 2
   },
   { 
-    name: 'Жрець', 
-    hitDice: 8,
-    hitDiceCount: 1,
-    primary: 'wis', 
-    secondary: 'str', 
-    saves: ['wis', 'cha'],
-    skills: ['Medicine', 'Persuasion'],
-    proficiencyBonus: 2
-  },
-  { 
-    name: 'Злодій', 
+    name: 'Спритник', 
     hitDice: 8,
     hitDiceCount: 1,
     primary: 'dex', 
     secondary: 'int', 
     saves: ['dex', 'int'],
-    skills: ['Acrobatics', 'Stealth'],
+    skills: ['Акробатика', 'Аналіз', 'Обман', 'Потайність', 'Переконання', 'Спритність рук'],
+    proficiencyBonus: 2
+  },
+  { 
+    name: 'Чародій', 
+    hitDice: 6,
+    hitDiceCount: 1,
+    primary: 'cha', 
+    secondary: 'con', 
+    saves: ['con', 'cha'],
+    skills: ['Аналіз', 'Магія', 'Релігія', 'Переконання', 'Проникливість'],
+    proficiencyBonus: 2
+  },
+  { 
+    name: 'Чаклун', 
+    hitDice: 8,
+    hitDiceCount: 1,
+    primary: 'cha', 
+    secondary: 'int', 
+    saves: ['wis', 'cha'],
+    skills: ['Обман', 'Магія', 'Проникливість', 'Переконання', 'Релігія'],
+    proficiencyBonus: 2
+  },
+  { 
+    name: 'Чарівник', 
+    hitDice: 6,
+    hitDiceCount: 1,
+    primary: 'int', 
+    secondary: 'dex', 
+    saves: ['int', 'wis'],
+    skills: ['Аналіз', 'Магія', 'Історія', 'Проникливість', 'Релігія'],
     proficiencyBonus: 2
   }
 ]
@@ -117,7 +190,7 @@ const characterSkills = computed(() => {
   if (!generatedStats.value || !selectedClassData.value) return []
   const classData = selectedClassData.value
   const proficiencyBonus = classData.proficiencyBonus || 2
-  const classProficientSkills = CLASS_SKILLS[classData.name] || []
+  const classProficientSkills = classData.skills || []
   
   return SKILLS.map(skill => {
     const isProficient = classProficientSkills.includes(skill.name)
@@ -168,14 +241,6 @@ const SKILLS = [
   { name: 'Догляд за тваринами', ability: 'wis' }
 ]
 
-// Навычки класса
-const CLASS_SKILLS = {
-  'Воїн': ['Атлетика', 'Уважність', 'Виживання', 'Залякування', 'Історія', 'Проникливість'],
-  'Маг': ['Аналіз', 'Магія', 'Історія', 'Релігія'],
-  'Слідопит': ['Уважність', 'Виживання', 'Потайність', 'Спритність рук', 'Проникливіст'],
-  'Жрець': ['Медицина', 'Переконання', 'Релігія', 'Проникливість', 'Історія'],
-  'Злодій': ['Акробатика', 'Аналіз', 'Обман', 'Потайність', 'Переконання', 'Спритність рук']
-}
 
 // Кость хитов
 const hitDiceInfo = computed(() => {
