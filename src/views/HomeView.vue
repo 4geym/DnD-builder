@@ -5,24 +5,24 @@ import { ref } from 'vue'
 const treeData = ref([
   {
     id: 'root',
-    name: 'D&D Builder',
+    name: 'D&D Builder v1.0',
     type: 'root',
     expanded: true,
     children: [
       {
         id: 'tools',
-        name: 'Інструменти',
+        name: '[TOOLS]',
         type: 'folder',
         expanded: true,
         children: [
           {
             id: 'character',
-            name: 'Генератор персонажів',
+            name: 'CHARACTER_GEN.EXE',
             type: 'file',
-            icon: '⚔️',
+            icon: '[>]',
             description: 'Створюйте болванки персонажів для D&D',
             link: '/character',
-            color: '#8fbc8f'
+            color: '#33ff33'
           }
         ]
       }
@@ -36,112 +36,116 @@ const toggleFolder = (item) => {
     item.expanded = !item.expanded
   }
 }
+
+// Сообщение BIOS-стиля
+const biosMessage = ref('System ready...')
 </script>
 
 <template>
   <main>
-    <header class="hero">
-      <h1>D&D Builder</h1>
-      <p class="subtitle">Інструменти для майстрів та гравців</p>
-    </header>
+    <div class="bios-screen">
+      <!-- BIOS Header -->
+      <div class="bios-header">
+        <pre class="bios-logo">
+ ██████╗██╗      █████╗ ██████╗  █████╗ ██████╗ ██████╗ ███████╗██████╗ 
+██╔════╝██║     ██╔══██╗██╔══██╗██╔══██╗██╔══██╗██╔══██╗██╔════╝██╔══██╗
+██║     ██║     ███████║██████╔╝███████║██████╔╝██║  ██║█████╗  ██████╔╝
+██║     ███╗    ██╔══██║██╔══██╗██╔══██║██╔═══╝ ██║  ██║██╔══╝  ██╔══██╗
+╚██████╗███████╗██║  ██║██║  ██║██║  ██║██║     ██████╔╝███████╗██║  ██║
+ ╚═════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═════╝ ╚══════╝╚═╝  ╚═╝
+        </pre>
+        <div class="bios-version">D&D BUILDER BIOS v1.0.0 | (c) 2024</div>
+        <div class="bios-divider">══════════════════════════════════════════════════════════════════════</div>
+      </div>
 
-    <section class="catalog">
-      <h2>Каталог інструментів</h2>
-      
-      <!-- Древовидная структура -->
-      <div class="tree-container">
-        <template v-for="item in treeData" :key="item.id">
-          <div class="tree-item-wrapper">
-            <!-- Рекурсивный рендеринг дерева -->
-            <template v-for="node in [item]" :key="node.id">
-              <div 
-                :class="['tree-node', node.type, { expanded: node.expanded, root: node.type === 'root' }]"
-              >
-                <!-- Строки дерева -->
-                <div class="tree-lines" v-if="node.type !== 'root'">
-                  <span class="tree-line-vertical"></span>
-                </div>
-                
-                <!-- Контент элемента -->
-                <div 
-                  :class="['tree-content', node.type]"
-                  @click="node.type === 'folder' ? toggleFolder(node) : null"
-                >
-                  <router-link 
-                    v-if="node.type === 'file'" 
-                    :to="node.link"
-                    class="file-link"
-                    :style="{ '--accent-color': node.color }"
+      <!-- Main Content -->
+      <div class="bios-content">
+        <div class="menu-section">
+          <div class="section-title">> MAIN MENU</div>
+          <div class="divider-line">──────────────────────────────────────</div>
+          
+          <!-- Древовидная структура -->
+          <div class="tree-container">
+            <template v-for="item in treeData" :key="item.id">
+              <div class="tree-item-wrapper">
+                <!-- Рекурсивный рендеринг дерева -->
+                <template v-for="node in [item]" :key="node.id">
+                  <div 
+                    :class="['tree-node', node.type, { expanded: node.expanded, root: node.type === 'root' }]"
                   >
-                    <span class="node-icon">{{ node.icon || '📁' }}</span>
-                    <span class="node-name">{{ node.name }}</span>
-                  </router-link>
-                  
-                  <div v-else class="folder-link">
-                    <span class="expand-icon">
-                      <template v-if="node.type === 'folder'">
-                        <span v-if="node.expanded">▼</span>
-                        <span v-else>▶</span>
-                      </template>
-                    </span>
-                    <span class="node-icon">{{ node.type === 'root' ? '💾' : '📁' }}</span>
-                    <span class="node-name">{{ node.name }}</span>
-                  </div>
-                </div>
-              </div>
-              
-              <!-- Рекурсивные дочерние элементы -->
-              <div v-if="node.children && node.expanded" class="tree-children">
-                <template v-for="child in node.children" :key="child.id">
-                  <div :class="['tree-node', child.type, { expanded: child.expanded }]">
-                    <div class="tree-lines">
-                      <span class="tree-line-vertical"></span>
-                    </div>
-                    
+                    <!-- Контент элемента -->
                     <div 
-                      :class="['tree-content', child.type]"
-                      @click="child.type === 'folder' ? toggleFolder(child) : null"
+                      :class="['tree-content', node.type]"
+                      @click="node.type === 'folder' ? toggleFolder(node) : null"
                     >
                       <router-link 
-                        v-if="child.type === 'file'" 
-                        :to="child.link"
+                        v-if="node.type === 'file'" 
+                        :to="node.link"
                         class="file-link"
-                        :style="{ '--accent-color': child.color }"
+                        :style="{ '--accent-color': node.color }"
                       >
-                        <span class="node-icon">{{ child.icon || '📄' }}</span>
-                        <span class="node-name">{{ child.name }}</span>
+                        <span class="node-icon">{{ node.icon }}</span>
+                        <span class="node-name">{{ node.name }}</span>
                       </router-link>
                       
                       <div v-else class="folder-link">
                         <span class="expand-icon">
-                          <span v-if="child.expanded">▼</span>
-                          <span v-else>▶</span>
+                          <template v-if="node.type === 'folder'">
+                            <span v-if="node.expanded">[-]</span>
+                            <span v-else>[+]</span>
+                          </template>
                         </span>
-                        <span class="node-icon">📁</span>
-                        <span class="node-name">{{ child.name }}</span>
+                        <span class="node-name">{{ node.name }}</span>
                       </div>
                     </div>
                   </div>
                   
-                  <!-- Вложенные дети второго уровня -->
-                  <div v-if="child.children && child.expanded" class="tree-children">
-                    <template v-for="subchild in child.children" :key="subchild.id">
-                      <div :class="['tree-node', subchild.type, { expanded: subchild.expanded }]">
-                        <div class="tree-lines">
-                          <span class="tree-line-vertical"></span>
-                        </div>
-                        
-                        <div class="tree-content">
+                  <!-- Рекурсивные дочерние элементы -->
+                  <div v-if="node.children && node.expanded" class="tree-children">
+                    <template v-for="child in node.children" :key="child.id">
+                      <div :class="['tree-node', child.type, { expanded: child.expanded }]">
+                        <div 
+                          :class="['tree-content', child.type]"
+                          @click="child.type === 'folder' ? toggleFolder(child) : null"
+                        >
                           <router-link 
-                            v-if="subchild.type === 'file'" 
-                            :to="subchild.link"
+                            v-if="child.type === 'file'" 
+                            :to="child.link"
                             class="file-link"
-                            :style="{ '--accent-color': subchild.color }"
+                            :style="{ '--accent-color': child.color }"
                           >
-                            <span class="node-icon">{{ subchild.icon || '📄' }}</span>
-                            <span class="node-name">{{ subchild.name }}</span>
+                            <span class="node-icon">{{ child.icon }}</span>
+                            <span class="node-name">{{ child.name }}</span>
+                            <span class="file-description">{{ child.description }}</span>
                           </router-link>
+                          
+                          <div v-else class="folder-link">
+                            <span class="expand-icon">
+                              <span v-if="child.expanded">[-]</span>
+                              <span v-else>[+]</span>
+                            </span>
+                            <span class="node-name">{{ child.name }}</span>
+                          </div>
                         </div>
+                      </div>
+                      
+                      <!-- Вложенные дети второго уровня -->
+                      <div v-if="child.children && child.expanded" class="tree-children">
+                        <template v-for="subchild in child.children" :key="subchild.id">
+                          <div :class="['tree-node', subchild.type, { expanded: subchild.expanded }]">
+                            <div class="tree-content">
+                              <router-link 
+                                v-if="subchild.type === 'file'" 
+                                :to="subchild.link"
+                                class="file-link"
+                                :style="{ '--accent-color': subchild.color }"
+                              >
+                                <span class="node-icon">{{ subchild.icon }}</span>
+                                <span class="node-name">{{ subchild.name }}</span>
+                              </router-link>
+                            </div>
+                          </div>
+                        </template>
                       </div>
                     </template>
                   </div>
@@ -149,56 +153,117 @@ const toggleFolder = (item) => {
               </div>
             </template>
           </div>
-        </template>
+        </div>
+
+        <!-- Info Panel -->
+        <div class="info-panel">
+          <div class="section-title">> SYSTEM INFO</div>
+          <div class="divider-line">──────────────────────────────────────</div>
+          <div class="info-content">
+            <div class="info-row"><span class="info-label">CPU:</span> <span class="info-value">D&D 6502 @ 4.77MHz</span></div>
+            <div class="info-row"><span class="info-label">RAM:</span> <span class="info-value">640K OK</span></div>
+            <div class="info-row"><span class="info-label">VIDEO:</span> <span class="info-value">CGA 4K</span></div>
+            <div class="info-row"><span class="info-label">DATE:</span> <span class="info-value">01/01/1990</span></div>
+            <div class="info-row"><span class="info-label">STATUS:</span> <span class="info-value blink">{{ biosMessage }}</span></div>
+          </div>
+        </div>
       </div>
-    </section>
+
+      <!-- BIOS Footer -->
+      <div class="bios-footer">
+        <div class="divider-line">══════════════════════════════════════════════════════════════════════</div>
+        <div class="footer-text">
+          <span>Press [ENTER] to select | [TAB] to switch | [ESC] to exit</span>
+        </div>
+      </div>
+    </div>
   </main>
 </template>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
 main {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 2rem 1rem;
+  min-height: 100vh;
+  background: #000000;
+  padding: 0;
+  margin: 0;
 }
 
-.hero {
+.bios-screen {
+  font-family: 'VT323', 'Courier New', monospace;
+  background: #000000;
+  color: #33ff33;
+  min-height: 100vh;
+  padding: 20px;
+  font-size: 18px;
+  line-height: 1.2;
+}
+
+/* Header Styles */
+.bios-header {
+  margin-bottom: 20px;
+}
+
+.bios-logo {
+  font-size: 10px;
+  line-height: 10px;
+  color: #33ff33;
+  margin: 0 0 10px 0;
   text-align: center;
-  margin-bottom: 3rem;
-  padding: 3rem 1rem;
-  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-  border-radius: 12px;
-  color: #fff;
+  overflow-x: auto;
 }
 
-.hero h1 {
-  font-size: 3rem;
-  margin-bottom: 0.5rem;
-  letter-spacing: 2px;
+.bios-version {
+  color: #33ff33;
+  margin-bottom: 5px;
 }
 
-.subtitle {
-  font-size: 1.2rem;
-  opacity: 0.9;
+.bios-divider {
+  color: #33ff33;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
-.catalog {
-  margin-bottom: 3rem;
+/* Content Styles */
+.bios-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
 }
 
-.catalog h2 {
-  font-size: 1.8rem;
-  margin-bottom: 1.5rem;
-  text-align: center;
+@media (max-width: 800px) {
+  .bios-content {
+    grid-template-columns: 1fr;
+  }
+}
+
+.menu-section, .info-panel {
+  background: #0a0a0a;
+  border: 1px solid #33ff33;
+  padding: 15px;
+}
+
+.section-title {
+  color: #33ff33;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.divider-line {
+  color: #33ff33;
+  margin-bottom: 15px;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 /* Tree Styles */
 .tree-container {
-  background: #1e1e1e;
-  border-radius: 8px;
-  padding: 1.5rem;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  color: #33ff33;
 }
 
 .tree-item-wrapper {
@@ -208,61 +273,29 @@ main {
 .tree-node {
   display: flex;
   align-items: stretch;
-  min-height: 32px;
-}
-
-.tree-node.root {
-  margin-bottom: 0.5rem;
-}
-
-.tree-node.root .tree-content {
-  background: transparent;
-  padding: 0.5rem;
-}
-
-.tree-lines {
-  width: 24px;
-  display: flex;
-  justify-content: center;
-  position: relative;
-  flex-shrink: 0;
-}
-
-.tree-line-vertical {
-  width: 2px;
-  background: #4a4a4a;
-  position: absolute;
-  top: 0;
-  bottom: 0;
+  min-height: 24px;
 }
 
 .tree-children {
-  padding-left: 24px;
+  padding-left: 20px;
 }
 
 .tree-content {
   flex: 1;
   display: flex;
   align-items: center;
-  padding: 6px 12px;
-  margin: 2px 0;
-  border-radius: 6px;
+  padding: 4px 0;
   cursor: pointer;
-  transition: all 0.2s ease;
+  flex-wrap: wrap;
 }
 
 .tree-content:hover {
-  background: #2d2d2d;
+  background: #33ff33;
+  color: #000000;
 }
 
-.tree-content.folder {
-  color: #569cd6;
-}
-
-.tree-content.root {
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: #dcdcaa;
+.tree-content:hover a {
+  color: #000000;
 }
 
 .folder-link {
@@ -278,84 +311,89 @@ main {
   gap: 8px;
   width: 100%;
   text-decoration: none;
-  color: #9cdcfe;
-  transition: all 0.2s ease;
+  color: #33ff33;
+  flex-wrap: wrap;
 }
 
 .file-link:hover {
-  background: #37373d;
-  border-radius: 4px;
-  color: var(--accent-color);
-}
-
-.file-link:hover .node-icon {
-  transform: scale(1.1);
+  background: #33ff33;
+  color: #000000;
 }
 
 .expand-icon {
-  width: 16px;
-  font-size: 10px;
-  color: #6a6a6a;
-  transition: transform 0.2s ease;
+  width: 24px;
+  font-size: 14px;
 }
 
 .node-icon {
-  font-size: 1.1rem;
-  width: 24px;
-  text-align: center;
-  transition: transform 0.2s ease;
+  font-size: 16px;
+  min-width: 30px;
 }
 
 .node-name {
-  font-size: 0.95rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-size: 16px;
 }
 
-/* Описание файла */
-.file-link {
-  position: relative;
+.file-description {
+  width: 100%;
+  font-size: 14px;
+  opacity: 0.8;
+  margin-left: 30px;
+  margin-top: 2px;
 }
 
-.file-link::after {
-  content: attr(data-description);
-  position: absolute;
-  left: 100%;
-  top: 50%;
-  transform: translateY(-50%);
-  margin-left: 12px;
-  background: #252526;
-  color: #808080;
-  padding: 4px 10px;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s ease;
-  z-index: 10;
+/* Info Panel */
+.info-content {
+  color: #33ff33;
 }
 
-.file-link:hover::after {
-  opacity: 1;
+.info-row {
+  margin-bottom: 8px;
 }
 
-@media (max-width: 600px) {
-  .hero h1 {
-    font-size: 2rem;
-  }
-  
-  .tree-container {
-    padding: 1rem;
-  }
-  
-  .tree-children {
-    padding-left: 12px;
-  }
-  
-  .tree-lines {
-    width: 12px;
-  }
+.info-label {
+  color: #33ff33;
+}
+
+.info-value {
+  color: #33ff33;
+}
+
+.blink {
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* Footer */
+.bios-footer {
+  margin-top: 20px;
+}
+
+.footer-text {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 16px;
+}
+
+/* Scrollbar for webkit */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #000000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #33ff33;
+}
+
+::-webkit-scrollbar-corner {
+  background: #000000;
 }
 </style>
