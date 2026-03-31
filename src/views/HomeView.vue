@@ -8,9 +8,7 @@ const systemInfo = ref({
   timezone: '',
   browser: '',
   os: '',
-  screenResolution: '',
-  colorDepth: '',
-  language: ''
+  screenResolution: ''
 })
 
 // Обновление времени
@@ -49,8 +47,6 @@ const getSystemInfo = () => {
   systemInfo.value.browser = getBrowser()
   systemInfo.value.os = getOS()
   systemInfo.value.screenResolution = `${window.screen.width}x${window.screen.height}`
-  systemInfo.value.colorDepth = `${window.screen.colorDepth}-bit`
-  systemInfo.value.language = navigator.language || 'Unknown'
 }
 
 let timeInterval = null
@@ -230,8 +226,6 @@ const biosMessage = ref('System ready...')
             <div class="info-row"><span class="info-label">BROWSER:</span> <span class="info-value">{{ systemInfo.browser }}</span></div>
             <div class="info-row"><span class="info-label">OS:</span> <span class="info-value">{{ systemInfo.os }}</span></div>
             <div class="info-row"><span class="info-label">RESOLUTION:</span> <span class="info-value">{{ systemInfo.screenResolution }}</span></div>
-            <div class="info-row"><span class="info-label">COLOR:</span> <span class="info-value">{{ systemInfo.colorDepth }}</span></div>
-            <div class="info-row"><span class="info-label">LANG:</span> <span class="info-value">{{ systemInfo.language }}</span></div>
             <div class="info-row"><span class="info-label">STATUS:</span> <span class="info-value blink">{{ biosMessage }}</span></div>
           </div>
         </div>
