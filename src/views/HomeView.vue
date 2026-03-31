@@ -5,7 +5,7 @@ import { ref } from 'vue'
 const treeData = ref([
   {
     id: 'root',
-    name: 'D&D Builder v1.0',
+    name: 'User',
     type: 'root',
     expanded: true,
     children: [
@@ -54,7 +54,7 @@ const biosMessage = ref('System ready...')
 ╚██████╗███████╗██║  ██║██║  ██║██║  ██║██║     ██████╔╝███████╗██║  ██║
  ╚═════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═════╝ ╚══════╝╚═╝  ╚═╝
         </pre>
-        <div class="bios-version">D&D BUILDER BIOS v1.0.0 | (c) 2024</div>
+        <div class="bios-version">VOLYXD BIOS v1.0.0</div>
         <div class="bios-divider">══════════════════════════════════════════════════════════════════════</div>
       </div>
 
@@ -173,7 +173,7 @@ const biosMessage = ref('System ready...')
       <div class="bios-footer">
         <div class="divider-line">══════════════════════════════════════════════════════════════════════</div>
         <div class="footer-text">
-          <span>Press [ENTER] to select | [TAB] to switch | [ESC] to exit</span>
+          <span>Press [ENTER] to select | [TAB] to switch</span>
         </div>
       </div>
     </div>
