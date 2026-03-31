@@ -7,11 +7,19 @@
   box-sizing: border-box;
 }
 
-body {
+html, body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  line-height: 1.6;
-  color: #333;
-  background-color: #fafafa;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000000;
+  font-family: 'VT323', 'Courier New', monospace;
+  color: #33ff33;
+}
+
+#app {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #000000;
 }
 </style>

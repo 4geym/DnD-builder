@@ -181,7 +181,6 @@ const biosMessage = ref('System ready...')
 </template>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
 
 * {
   box-sizing: border-box;
