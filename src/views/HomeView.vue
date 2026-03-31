@@ -1,5 +1,69 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
+
+// Системная информация
+const systemInfo = ref({
+  time: '',
+  date: '',
+  timezone: '',
+  browser: '',
+  os: '',
+  screenResolution: '',
+  colorDepth: '',
+  language: ''
+})
+
+// Обновление времени
+const updateTime = () => {
+  const now = new Date()
+  systemInfo.value.time = now.toLocaleTimeString('ru-RU', { hour12: false })
+  systemInfo.value.date = now.toLocaleDateString('ru-RU')
+  systemInfo.value.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+}
+
+// Определение браузера
+const getBrowser = () => {
+  const ua = navigator.userAgent
+  if (ua.includes('Firefox')) return 'Firefox'
+  if (ua.includes('Chrome') && !ua.includes('Edg')) return 'Chrome'
+  if (ua.includes('Edg')) return 'Edge'
+  if (ua.includes('Safari') && !ua.includes('Chrome')) return 'Safari'
+  if (ua.includes('MSIE') || ua.includes('Trident')) return 'Internet Explorer'
+  return 'Unknown'
+}
+
+// Определение ОС
+const getOS = () => {
+  const ua = navigator.userAgent
+  if (ua.includes('Windows')) return 'Windows'
+  if (ua.includes('Mac')) return 'macOS'
+  if (ua.includes('Linux')) return 'Linux'
+  if (ua.includes('Android')) return 'Android'
+  if (ua.includes('iOS') || ua.includes('iPhone') || ua.includes('iPad')) return 'iOS'
+  return 'Unknown'
+}
+
+// Получение системной информации
+const getSystemInfo = () => {
+  updateTime()
+  systemInfo.value.browser = getBrowser()
+  systemInfo.value.os = getOS()
+  systemInfo.value.screenResolution = `${window.screen.width}x${window.screen.height}`
+  systemInfo.value.colorDepth = `${window.screen.colorDepth}-bit`
+  systemInfo.value.language = navigator.language || 'Unknown'
+}
+
+let timeInterval = null
+
+onMounted(() => {
+  getSystemInfo()
+  // Обновлять время каждую секунду
+  timeInterval = setInterval(updateTime, 1000)
+})
+
+onUnmounted(() => {
+  if (timeInterval) clearInterval(timeInterval)
+})
 
 // Дерево папок/модулей
 const treeData = ref([
@@ -160,10 +224,14 @@ const biosMessage = ref('System ready...')
           <div class="section-title">> SYSTEM INFO</div>
           <div class="divider-line">──────────────────────────────────────</div>
           <div class="info-content">
-            <div class="info-row"><span class="info-label">CPU:</span> <span class="info-value">D&D 6502 @ 4.77MHz</span></div>
-            <div class="info-row"><span class="info-label">RAM:</span> <span class="info-value">640K OK</span></div>
-            <div class="info-row"><span class="info-label">VIDEO:</span> <span class="info-value">CGA 4K</span></div>
-            <div class="info-row"><span class="info-label">DATE:</span> <span class="info-value">01/01/1990</span></div>
+            <div class="info-row"><span class="info-label">TIME:</span> <span class="info-value">{{ systemInfo.time }}</span></div>
+            <div class="info-row"><span class="info-label">DATE:</span> <span class="info-value">{{ systemInfo.date }}</span></div>
+            <div class="info-row"><span class="info-label">TIMEZONE:</span> <span class="info-value">{{ systemInfo.timezone }}</span></div>
+            <div class="info-row"><span class="info-label">BROWSER:</span> <span class="info-value">{{ systemInfo.browser }}</span></div>
+            <div class="info-row"><span class="info-label">OS:</span> <span class="info-value">{{ systemInfo.os }}</span></div>
+            <div class="info-row"><span class="info-label">RESOLUTION:</span> <span class="info-value">{{ systemInfo.screenResolution }}</span></div>
+            <div class="info-row"><span class="info-label">COLOR:</span> <span class="info-value">{{ systemInfo.colorDepth }}</span></div>
+            <div class="info-row"><span class="info-label">LANG:</span> <span class="info-value">{{ systemInfo.language }}</span></div>
             <div class="info-row"><span class="info-label">STATUS:</span> <span class="info-value blink">{{ biosMessage }}</span></div>
           </div>
         </div>
